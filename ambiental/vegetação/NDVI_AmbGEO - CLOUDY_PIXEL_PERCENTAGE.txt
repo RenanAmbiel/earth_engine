@@ -1,0 +1,15 @@
+// Load a raw Landsat scene and display it.
+var raw = ee.ImageCollection('COPERNICUS/S2_SR_HARMONIZED')
+  .select(['B.*'])
+  .filterDate("2022-01-01","2022-12-31")
+  .filterBounds(AREA)
+  .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE',1))
+  .sort('CLOUDY_PIXEL_PERCENTAGE')
+  .first()
+
+print('nome',raw.get('PRODUCT_ID'))
+print('%',raw.get('CLOUDY_PIXEL_PERCENTAGE'))
+
+var image = raw.multiply(0.0001)
+var ndvi  = image.normalizedDifference(['B8','B4']).rename('NDVI')
+Map.addLayer(ndvi, {palette:['blue', 'yellow', 'green'], min: -0.3, max: 0.7})

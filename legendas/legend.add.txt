@@ -1,0 +1,21 @@
+//posiçao da legenda
+
+var legend = ui.Panel({
+  style:{
+    position: 'bottom-right',
+    padding: '9px 15px'
+  }
+}) 
+//titulo
+
+var legendatitulo = ui.Label({
+  value: 'legenda uso cobertura',
+  style:{
+    fontWeight:'bold',
+    fontSize:'10px',
+    margin: '0 0 4px 0',
+    padding: '0'}
+})
+
+legend.add(legendatitulo)
+Map.add(legend)

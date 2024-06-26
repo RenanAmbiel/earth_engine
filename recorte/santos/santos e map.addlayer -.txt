@@ -1,0 +1,22 @@
+//1. Importar o contorno da área de interesse (em Shapefile)
+
+//2. Seleção de uma coleção de imagens do Landsat 8
+var L8 = ee.ImageCollection("LANDSAT/LC08/C01/T1_SR")
+    .filterDate('2019-01-01', '2019-05-01') //2.2. Definir as datas de início e fim da coleção
+    .filterMetadata('CLOUD_COVER','less_than',10) //2.3. Selecionar apenas as imagens com baixa porcentagem de núvens
+
+//3. Visualizar as propriedades da coleção de imagens
+print(L8);
+
+//4. Centralizar a visualização na área de estudo
+Map.centerObject(santos, 14);
+
+//5. Desenhar o contorno da área
+ 
+//6. Outra maneira mais simples de visualizar a área de interesse
+
+//7. Visualizar uma imagem em composição colorida (cor verdadeira/Red-Green-Blue)
+
+var visParams = {bands:['B4', 'B3', 'B2'], min: 150, max: 2000};//7.1. Parâmetros de visualização colorida (cor verdadeira/Red-Green-Blue) Landsat 8
+Map.addLayer(L8,visParams);//7.2. Exibir a primeira imagem da coleção na composição colorida (cor verdadeira)
+

@@ -1,0 +1,16 @@
+var Brasil = table.filter(ee.Filter.eq('nome','Brasil'));
+
+// Load a raw Landsat scene and display it.
+var l8 = ee.ImageCollection('LANDSAT/LC08/C01/T1_SR')
+  .filterDate('2014-06-01', '2014-10-01')
+ 
+var imagem = l8.median()
+
+
+var clipar = function(imagec) {
+  return imagec.clipToCollection(Brasil);
+};
+
+// Center the map on the image.
+Map.centerObject(Brasil, 9)
+Map.addLayer(imagem.clip(Brasil), {bands: ['B4', 'B3', 'B2'], min: 115, max: 2976})

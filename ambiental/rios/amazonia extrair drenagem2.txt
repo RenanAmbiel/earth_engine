@@ -1,0 +1,27 @@
+
+var   removerBorda = function (image){
+  var box = image.geometry()
+  return image.clip(box.buffer(-500))
+}
+var removerNuvens = function (image){
+  var box = image.geometry()
+  var scored = ee.Algorithms.Landsat.simpleCloudScore(image) 
+  var imagemSemNuvem = image.updateMask(scored.select(['cloud']).lt(77))
+  return removerBorda(imagemSemNuvem);
+}
+var colecaoTempo = imageCollection.filterDate('2021-01-01','2022-12-31')
+var colecaoTempoEspaco = colecaoTempo.filterBounds(geometry)
+  .map(removerNuvens)
+  
+var mosaicoConstruido = colecaoTempoEspaco.median()
+var imagemHSV = mosaicoConstruido.select(['B6','B5','B4']).rgbToHsv()
+var huebands = imagemHSV.select('hue')
+var agua = huebands.updateMask(huebands.lte(0.93))
+agua = agua.updateMask(agua.gt(0.4))
+
+Map.addLayer(colecaoTempoEspaco.median(),{min: 0.0285163726657629 ,max:0.5739701986312866, bands:['B6','B5','B4']},'Amazonia landsat')
+Map.addLayer(imagemHSV, {bands:['hue']}, 'hue')
+Map.addLayer(agua)
+
+
+

@@ -1,0 +1,3 @@
+var countries = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017');
+var selected = countries.filter(ee.Filter.eq('country_na', ee.String(
+    country)));

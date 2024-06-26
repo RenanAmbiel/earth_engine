@@ -1,0 +1,28 @@
+//1. Importar o contorno da área de interesse (em Shapefile)
+
+//2. Seleção de uma coleção de imagens do Landsat 8
+var L8 = ee.ImageCollection("LANDSAT/LC08/C01/T1_SR")
+    .filterBounds(santos) //2.1. Filtrar as imagens em que a área de estudo está localizada
+    .filterDate('2019-01-01', '2019-05-01') //2.2. Definir as datas de início e fim da coleção
+    .filterMetadata('CLOUD_COVER','less_than',10) //2.3. Selecionar apenas as imagens com baixa porcentagem de núvens
+    .map(function(image){return image.clip(santos)}); //2.4. Recortar as imagens da coleção com base no contorno da área de interesse
+
+//3. Visualizar as propriedades da coleção de imagens
+print(L8);
+
+//4. Centralizar a visualização na área de estudo
+Map.centerObject(santos, 14);
+
+//5. Desenhar o contorno da área
+var empty = ee.Image().byte();//5.1. Criar uma imagem vazia para desenhar o contorno da área, convertendo em byte
+var outline = empty.paint({featureCollection: santos, width: 2});//5.2. Desenhar o contorno da área na imagem vazia
+Map.addLayer(outline, {palette: 'blue'}, 'Contorno', false);    //5.3. Exibir o contorno da área na cor e largura de linha desejadas
+
+//6. Outra maneira mais simples de visualizar a área de interesse
+//Map.addLayer(area, {color: 'red'}, 'Área');
+
+//7. Visualizar uma imagem em composição colorida (cor verdadeira/Red-Green-Blue)
+
+var visParams = {bands:['B4', 'B3', 'B2'], min: 150, max: 2000};//7.1. Parâmetros de visualização colorida (cor verdadeira/Red-Green-Blue) Landsat 8
+Map.addLayer(L8.median(),visParams, 'Landsat 8 - cor verdadeira', false);//7.2. Exibir a primeira imagem da coleção na composição colorida (cor verdadeira)
+

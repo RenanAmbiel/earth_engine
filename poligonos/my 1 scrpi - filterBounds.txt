@@ -1,0 +1,6 @@
+var santos = ee.ImageCollection("LANDSAT/LC08/C02/T1_L2") 
+            .filterBounds(area)
+  
+Map.addLayer(santos)
+Map.centerObject(area, 19)
+

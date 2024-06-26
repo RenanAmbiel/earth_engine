@@ -1,0 +1,14 @@
+var imagem = imageCollection.filterMetadata('CLOUD_COVER','less_than',0.1).filterDate('2012-09-01', '2023-09-30')
+
+  function  cliptocollection (img){
+  return img.clip(table)
+}
+var trueColor432Vis = {
+  bands: ['B4', 'B3', 'B2'],
+  min: 0.0,
+  max: 0.4,
+};
+
+Map.addLayer(imagem.map(cliptocollection),trueColor432Vis)
+
+Map.addLayer(table)

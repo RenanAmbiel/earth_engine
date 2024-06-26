@@ -1,0 +1,26 @@
+var cali = ee.FeatureCollection("TIGER/2016/Counties")
+  .filter(ee.Filter.eq('NAME','San Luis Obispo'));
+
+// Load a raw Landsat scene and display it.
+var raw = ee.ImageCollection('LANDSAT/LC08/C01/T1')
+  .filterDate("2015-01-01","2017-12-31")
+  .filterBounds(cali);
+
+// Reduce image collection to median pixel value
+var raw_median = raw.median();
+var imageRGB = raw_median.visualize({bands: ['B4', 'B3', 'B2'], min: 6000, max: 20000});
+
+// Export imagery
+Export.image.toDrive({
+  image: imageRGB.clip(cali),
+  description: 'SLO_LS8_RGB_30',
+  scale: 30,
+  region: cali.geometry().bounds(),
+  maxPixels: 1e13});
+
+Export.image.toDrive({
+  image: imageRGB.clip(cali),
+  description: 'SLO_LS8_RGB_2',
+  scale: 2,
+  region: cali.geometry().bounds(),
+  maxPixels: 1e13});

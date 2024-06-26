@@ -1,0 +1,27 @@
+var pa = table.filter(ee.Filter.eq('NM_UF','Pará'));
+
+function clip (image){
+  return image.clip(pa)
+}
+
+var image = ee.ImageCollection("UCSB-CHG/CHIRPS/DAILY")
+ .filterDate('2020-01-03','2020-12-31')
+ .select('precipitation')
+ .map(clip)
+
+var visTp = {
+  min: 0,
+  max: 111.34,
+  palette: ['#FFFFFF', '#00FFFF', '#0080FF', '#DA00FF', '#FFA400', '#FF0000']
+};
+
+Map.addLayer(image, {bands: 'precipitation', min: 0, max: 111, palette: ['brown', 'yellow', 'green']}, 'CHIRPS')
+var grafico = ui.Chart.image.series({
+  imageCollection:image,
+  region: pa,
+  reducer: ee.Reducer.mean(),
+  scale:5566,
+  xProperty:'system:time_start'
+})
+print(grafico)
+Map.centerObject(pa,6)

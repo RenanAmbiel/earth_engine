@@ -1,0 +1,9 @@
+// Load a feature collection.
+var featureCollection = ee.FeatureCollection('TIGER/2016/States');
+
+// Filter the collection.
+var filteredFC = featureCollection.filter(ee.Filter.eq('NAME', 'California'));
+
+// Display the collection.
+Map.setCenter(-119.604, 37.798, 6);
+Map.addLayer(filteredFC, {}, 'California');

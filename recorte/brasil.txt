@@ -1,0 +1,13 @@
+var Brasil = table.filter(ee.Filter.eq('nome','Brasil'));
+
+// Load a raw Landsat scene and display it.
+var image = ee.ImageCollection('LANDSAT/LC08/C01/T1')
+  .filterDate("2015-01-01","2017-12-31")
+  .filterBounds(Brasil);
+  
+
+
+
+// Center the map on the image.
+Map.centerObject(Brasil, 9)
+Map.addLayer(image,{bands: ['B4', 'B3', 'B2'], min: 6396, max: 31256},'Indaiatuba')

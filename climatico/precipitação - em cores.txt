@@ -1,0 +1,13 @@
+var image = ee.ImageCollection("UCSB-CHG/CHIRPS/DAILY")
+ .filterDate('2023-03-01','2023-04-02')
+ .first()
+ 
+var visTp = {
+  min: 0,
+  max: 111.34,
+  palette: ['#FFFFFF', '#00FFFF', '#0080FF', '#DA00FF', '#FFA400', '#FF0000']
+};
+
+Map.addLayer(image, visTp, 'CHIRPS')
+Map.centerObject(image)
+     

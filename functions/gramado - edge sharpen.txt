@@ -1,0 +1,22 @@
+var Gramado = table.filter(ee.Filter.eq('NM_MUN','Gramado'));
+// Load a raw Landsat scene and display it.
+var raw = ee.ImageCollection('LANDSAT/LC08/C02/T1_L2')
+  .select(['SR_B4','SR_B3','SR_B2'])
+  .filterDate("2022-01-01","2022-12-31")
+  .filterBounds(Gramado)
+  .filter(ee.Filter.lt('CLOUD_COVER',1))
+  .median()
+  .clip(Gramado)
+
+var lap = ee.Kernel.laplacian8({normalize:false} )
+var edge = raw.convolve(lap)
+var ret = raw.subtract(edge)
+
+print('nome',raw.get('PRODUCT_ID'))
+print('%',raw.get('CLOUD_COVER'))
+
+Map.addLayer(ret,imageVisParam, 'landsat-edge')
+Map.centerObject(Gramado)
+
+Map.addLayer(raw,imageVisParam, 'landsat')
+Map.centerObject(Gramado)

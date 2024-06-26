@@ -1,0 +1,29 @@
+landsat7 = landsat7
+  .filterDate('2022-10-31','2023-01-01')
+  .filter(ee.Filter.lt('CLOUD_COVER',2))
+  .filterBounds(geometry)
+Map.addLayer(landsat7)  
+Map.centerObject(geometry)
+
+var left = ui.Map();
+var right = ui.Map();
+
+var NIR =  ui.Map.Layer(landsat7, imageVisParam);
+var RGB =   ui.Map.Layer(landsat7, imageVisParam2);
+ 
+var NIR_layer = left.layers()
+var RGB_layer = right.layers()
+
+NIR_layer = NIR_layer.add(NIR)
+RGB_layer = RGB_layer.add(RGB)
+
+var splitPanel = ui.SplitPanel({
+  firstPanel: left,
+  secondPanel: right,
+  orientation: 'horizontal',
+  wipe: true,
+});
+var linker = ui.Map.Linker([left, right]);
+ui.root.clear();
+ui.root.add(splitPanel)
+right.centerObject(geometry,9)

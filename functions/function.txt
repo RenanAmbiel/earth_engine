@@ -1,0 +1,3 @@
+var clip_fc = function(col) {
+  return col.clipToCollection(grid);
+};

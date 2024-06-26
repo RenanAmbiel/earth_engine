@@ -1,0 +1,5 @@
+var dataset = ee.FeatureCollection('FAO/GAUL_SIMPLIFIED_500m/2015/level0');
+
+
+
+Map.addLayer(dataset, {}, 'Second Level Administrative Units');

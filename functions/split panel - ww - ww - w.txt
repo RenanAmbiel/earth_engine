@@ -1,0 +1,28 @@
+// Define a region in which to generate a sample of the input.
+ var image = ee.ImageCollection('COPERNICUS/S2')
+    .filterDate('2020-05-15', '2020-05-19')
+    .mosaic();
+// Display the sample region.
+Map.setCenter(31.5, 31.0, 8);
+var center = {lon: -73.97, lat: 40.77, zoom: 13};
+
+// Create two maps.
+var leftMap = ui.Map(center);
+leftMap.addLayer(image, {bands: ['B8', 'B4', 'B3'], max: 3900}, 'color-NIR');
+var rightMap = ui.Map(center);
+rightMap.addLayer(image, {bands: ['B1', 'B2', 'B3'], max: 3900}, 'color-NsR');
+
+// Create a split panel with the two maps.
+var splitPanel = ui.SplitPanel({
+  firstPanel: leftMap,
+  secondPanel: rightMap,
+  orientation: 'horizontal',
+  wipe: true
+});
+
+// Remove the default map from the root panel.
+ui.root.clear();
+var linker = ui.Map.Linker([leftMap, rightMap]);
+
+// Add our split panel to the root panel.
+ui.root.add(splitPanel);

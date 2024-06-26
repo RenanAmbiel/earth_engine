@@ -1,0 +1,26 @@
+var imagens = ee.ImageCollection("LANDSAT/LC08/C02/T1_TOA")
+    .filterDate('2018-09-29', '2018-09-30')
+    
+var imagem = imagens.median()
+
+imagem = imagem.clip(geometry)
+
+var parametros = {
+  max: 0.49,
+  min: 0.3,
+  bands:'B6,B5,B4'
+}
+Map.addLayer(imagem, parametros,'oli')
+
+var treinamento = imagem.sample({
+  region: geometry,
+  scale: 30,
+  numPixels: 100
+})
+
+var agrupamento =   ee.Clusterer.wekaKMeans(30).train(treinamento)
+
+var resultado =   imagem.cluster(agrupamento)
+
+Map.addLayer(resultado.randomVisualizer())
+Map.centerObject(geometry,9)

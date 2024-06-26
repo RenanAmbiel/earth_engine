@@ -1,0 +1,15 @@
+//1. Importar o contorno da área de interesse (em Shapefile)
+
+//2. Seleção de uma coleção de imagens do Landsat 8
+var L8 = ee.Image('LANDSAT/LC08/C02/T1_L2/LC08_044034_20210508')
+
+// If the export has more than 1e8 pixels, set "maxPixels" higher.
+Export.image.toDrive({
+  image: L8,
+  description: 'image_export_maxpixels',
+  folder: 'ee_demos',
+  region: santos,
+  scale: 30,
+  crs: 'EPSG:4674',
+  maxPixels: 1e13
+});

@@ -1,0 +1,20 @@
+// A Landsat 8 surface reflectance image.
+var l8 = ee.ImageCollection('LANDSAT/LC08/C01/T1_SR')
+  .filterBounds(car)
+  .filterDate('2014-06-01', '2014-10-01')
+  .map(function(image){return image.clip(car)});
+
+// If the export has more than 1e8 pixels, set "maxPixels" higher.
+Export.image.toDrive({
+  image: l8,
+  description: 'image_export_maxpixels',
+  folder: 'ee_demos',
+  region: car,
+  scale: 0.11,
+  crs: 'EPSG:4674',
+  maxPixels: 1e13
+});
+var visParams = {bands:['B4', 'B3', 'B2'], min: 150, max: 2000};//7.1. Parâmetros de visualização colorida (cor verdadeira/Red-Green-Blue) Landsat 8
+Map.addLayer(l8.max(),visParams, 'Landsat 8 - cor verdadeira', false);
+
+print(l8)

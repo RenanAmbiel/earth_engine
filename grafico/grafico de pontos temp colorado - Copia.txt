@@ -1,0 +1,40 @@
+// Load SRTM elevation data.
+var elev = ee.Image('CGIAR/SRTM90_V4').select('elevation');
+
+// Subset Colorado from the TIGER States feature collection.
+var colorado = ee.FeatureCollection('TIGER/2018/States')
+                   .filter(ee.Filter.eq('NAME', 'Colorado'));
+
+// Draw a random sample of elevation points from within Colorado.
+var samp = elev.sample(
+    {region: colorado, scale: 30, numPixels: 500, geometries: true});
+
+// Load PRISM climate normals image collection; convert images to bands.
+var normClim = ee.ImageCollection('OREGONSTATE/PRISM/Norm81m').toBands();
+
+// Define the chart and print it to the console.
+var chart = ui.Chart.image
+                .byRegion({
+                  image: normClim.select(['01_tmean', '07_tmean']),
+                  regions: samp,
+                  reducer: ee.Reducer.mean(),
+                  scale: 500,
+                  xProperty: 'elevation'
+                })
+                .setSeriesNames(['Jan', 'Jul'])
+                .setChartType('ScatterChart')
+                .setOptions({
+                  title: 'Average Monthly Colorado Temperature by Elevation',
+                  hAxis: {
+                    title: 'Elevation (m)',
+                    titleTextStyle: {italic: false, bold: true}
+                  },
+                  vAxis: {
+                    title: 'Temperature (°C)',
+                    titleTextStyle: {italic: false, bold: true}
+                  },
+                  pointSize: 4,
+                  dataOpacity: 0.6,
+                  colors: ['1d6b99', 'cf513e'],
+                });
+print(chart);

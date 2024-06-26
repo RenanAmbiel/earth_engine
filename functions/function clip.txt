@@ -1,0 +1,9 @@
+var Indaiatuba = table.filter(ee.Filter.eq('NM_MUN','Indaiatuba'));
+
+
+function imagecliped(image){
+  return image.clip(Indaiatuba)
+}
+
+Map.addLayer(l8.map(imagecliped))
+Map.centerObject(Indaiatuba)

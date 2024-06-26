@@ -1,0 +1,16 @@
+var Acrelândia = table.filter(ee.Filter.eq('NM_MUN','Acrelândia'));
+
+// Load a raw Landsat scene and display it.
+var raw = ee.ImageCollection('LANDSAT/LC08/C01/T1')
+  .filterDate("2015-01-01","2017-12-31")
+  .filterBounds(Acrelândia)
+  .first();
+  
+var image = raw.multiply(0.0001)
+var ndvi  = image.normalizedDifference(['B5','B4']).rename('NDVI')
+
+
+// Center the map on the image.
+Map.centerObject(Acrelândia, 9);
+// Display the image.
+Map.addLayer(ndvi.clip(Acrelândia), {bands: ['NDVI'], min: 000, max: 1});

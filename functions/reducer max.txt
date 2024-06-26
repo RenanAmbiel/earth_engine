@@ -1,0 +1,14 @@
+// Load a raw Landsat scene and display it.
+var raw = ee.ImageCollection('LANDSAT/LC08/C01/T1')
+  .filterDate("2015-01-01","2017-12-31")
+  .filterBounds(area);
+
+// Reduce image collection to median pixel value
+var raw_median = raw.max();
+var imageRGB = raw_median.visualize({bands: ['B4', 'B3', 'B2'], min: 6000, max: 20000});
+
+// Center the map on the image.
+Map.centerObject(area, 9);
+
+// Display the image.
+Map.addLayer(imageRGB.clip(area));

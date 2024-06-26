@@ -1,0 +1,34 @@
+
+// Make a cloud-free Landsat 8 surface reflectance composite.
+var image = ee.ImageCollection('LANDSAT/LC08/C02/T1_L2')
+  .filterBounds(geometry)
+  .filterMetadata('CLOUD_COVER','less_than', 0.03)
+  .first()
+var bands = ['SR_B2', 'SR_B3', 'SR_B4'];
+
+Map.addLayer(image);
+
+var amostra = vegetacao.merge(agua).merge(solo)
+
+
+var training = image.select(bands).sampleRegions({
+  collection: amostra,
+  properties: ['class'],
+  scale: 30
+})
+
+var trained = ee.Classifier.minimumDistance('euclidean').train({
+  features: training,
+  classProperty: 'class',
+  inputProperties: bands});
+
+var classified = image.select(bands).classify(trained);
+
+Map.setCenter(-122.0877, 37.7880, 11);
+Map.addLayer(image,
+             {bands: ['SR_B4', 'SR_B3', 'SR_B2'], min: 0, max: 0.25},
+             'image');
+Map.addLayer(classified,
+             {min: 0, max: 2, palette: ['orange', 'green', 'blue']},
+             'classification');
+Map.centerObject(geometry)

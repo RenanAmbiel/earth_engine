@@ -1,0 +1,9 @@
+
+var GAUL_SIMPLIFIED_500m = ee.FeatureCollection(FAOGAUL_SIMPLIFIED_500m2015level0)
+
+var gswYearly = ee.ImageCollection(JRCGSW1_3YearlyHistory) 
+
+var Brazil = GAUL_SIMPLIFIED_500m.filter(ee.Filter.eq('ADM0_NAME', 'Brazil'))
+
+Map.addLayer(Brazil)
+Map.addLayer(gswYearly)

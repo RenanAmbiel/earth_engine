@@ -1,0 +1,13 @@
+// A Landsat 8 surface reflectance image with SWIR1, NIR, and green bands.
+var img = ee.Image('LANDSAT/LC08/C02/T1_L2/LC08_044034_20210508')
+              .select(['SR_B6', 'SR_B5', 'SR_B3']);
+
+// Santa Cruz Mountains ecoregion geometry.
+var geom = ee.FeatureCollection('EPA/Ecoregions/2013/L4')
+               .filter('us_l4name == "Santa Cruz Mountains"').geometry();
+
+// Display layers on the map.
+Map.setCenter(-122.08, 37.22, 9);
+Map.addLayer(img, {min: 10000, max: 20000}, 'Landsat image');
+Map.addLayer(geom, {color: 'white'}, 'Santa Cruz Mountains ecoregion');
+

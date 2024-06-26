@@ -1,0 +1,2 @@
+var counties = ee.FeatureCollection('TIGER/2018/Counties');
+Map.addLayer(counties, {}, 'counties');

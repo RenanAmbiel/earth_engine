@@ -1,0 +1,10 @@
+var hyperion = ee.ImageCollection('EO1/HYPERION').filter(
+    ee.Filter.date('2016-01-01', '2017-03-01')
+)
+
+var hyperion_vis = {
+    'min': 1000.0,
+    'max': 14000.0,
+    'gamma': 2.5,
+}
+Map.addLayer(hyperion, hyperion_vis, 'Hyperion')

@@ -1,0 +1,22 @@
+// A Landsat 8 surface reflectance image.
+var image = ee.ImageCollection("LANDSAT/LC08/C02/T1_RT")
+    
+//freature collection image colection  sentinel 2
+var landsat7 = ee.Image('LANDSAT/LE7_TOA_5YEAR/1999_2003')
+
+
+
+var left = ui.Map()
+left.addLayer(image, {bands: ['B2', 'B3', 'B4'], max: 3900}, 'color-NIR');
+var right = ui.Map()
+right.addLayer(landsat7, {bands: ['B5', 'B4', 'B3'], max: 3900}, 'color-NIR');
+
+var splitPanel = ui.SplitPanel({
+  firstPanel: left,
+  secondPanel: right,
+  orientation: 'horizontal',
+  wipe: true,
+});
+var linker = ui.Map.Linker([left, right]);
+ui.root.clear();
+ui.root.add(splitPanel)

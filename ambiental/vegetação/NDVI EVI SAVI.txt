@@ -1,0 +1,46 @@
+var app = function (image)
+{
+   //indice vegetaçao 
+var ndvi = image.normalizedDifference(['B5', 'B4']);
+image = image.addBands(ndvi.rename("NDVI"));
+return image
+}
+
+var ap = function (image)
+{
+var evi = image.expression(
+    '2.5 * (nir - red) / (nir + 6 * red - 7.5 * blue + 1)',
+    {
+        red: image.select('B4'),    // 620-670nm, RED
+        nir: image.select('B5'),    // 841-876nm, NIR
+        blue: image.select('B2')    // 459-479nm, BLUE
+    });
+image = image.addBands(evi.rename("EVI"));
+return image
+}
+var a = function (image){
+var savi = image.expression(
+    '1.5 * (nir - red) / (nir + red + 0.5 )',
+    {
+        red: image.select('B4'),    // 620-670nm, RED
+        nir: image.select('B5'),    // 841-876nm, NIR
+    });
+image = image.addBands(savi.rename("SAVI"));
+return image
+}
+var OLI = ee.ImageCollection("LANDSAT/LC08/C01/T1_TOA")
+ .filterDate('2017-01-01', '2017-09-11')
+ .map(app)
+ .map(ap)
+ .map(a)
+
+// rampa de cor 
+var palette = ['FFFFFF', 'CE7E45', 'DF923D', 'F1B555', 'FCD163', '99B718',
+               '74A901', '66A000', '529400', '3E8601', '207401', '056201',
+               '004C00', '023B01', '012E01', '011D01', '011301'];
+
+ 
+ //mapa
+ Map.addLayer(OLI.median(), {min: 0, max: 1, bands: ['NDVI'], palette: palette}, 'NDVI');
+ Map.addLayer(OLI.median(), {min: 0, max: 1, bands: ['EVI'], palette: palette}, 'EVI');
+ Map.addLayer(OLI.median(), {min: 0, max: 1, bands: ['SAVI'], palette: palette}, 'SAVI');

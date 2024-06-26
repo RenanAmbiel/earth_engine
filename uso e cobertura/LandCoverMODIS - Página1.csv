@@ -1,0 +1,17 @@
+#ffff64,"Cropland, rainfed"
+#aaf0f0,"Cropland, irrigated or post-flooding"
+#dcf064,"Mosaic cropland (>50%) / natural vegetation (tree, shrub, herbaceous cover) (<50%)"
+#c8c864,"Mosaic natural vegetation (tree, shrub, herbaceous cover) (>50%) / cropland (<50%)"
+#006400,"Tree cover, broadleaved, evergreen, closed to open (>15%)"
+#00a000,"Tree cover, broadleaved, deciduous, closed to open (>15%)"
+#003c00,"Tree cover, needleleaved, evergreen, closed to open (>15%)"
+#285000,"Tree cover, needleleaved, deciduous, closed to open (>15%)"
+#788200,"Tree cover, mixed leaf type (broadleaved and needleleaved)"
+#8ca000,Mosaic tree and shrub (>50%) / herbaceous cover (<50%)
+#be9600,Mosaic herbaceous cover (>50%) / tree and shrub (<50%)
+#966400,Shrubland
+#ffb432,Grassland
+#ffdcd2,Lichens and mosses
+#ffebaf,"Sparse vegetation (tree, shrub, herbaceous cover) (<15%)"
+#009678,"Tree cover, flooded, saline water"
+#00dc82,"Shrub or herbaceous cover, flooded, fresh/saline/brakish water"

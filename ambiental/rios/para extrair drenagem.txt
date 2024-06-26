@@ -1,0 +1,13 @@
+var imagemC =  imagens
+  .filterDate("2022-01-01","2022-12-31")
+  .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE',1))
+  .median()
+ 
+var ndvi = imagemC.normalizedDifference(['B3','B8'])
+Map.addLayer(imagemC,{bands: ['B2','B3','B4'],min:1135,max:2540},'rgb')
+Map.addLayer(ndvi,{palette:['blue', 'yellow', 'green'], min: -0.550, max: 0.23},'ndvi')
+
+var agua = ndvi  .gt(-0.2)
+var mascara_agua = agua.selfMask()
+
+Map.addLayer(mascara_agua)

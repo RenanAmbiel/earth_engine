@@ -1,0 +1,7 @@
+var bqa = function (imagem){
+  imagem = imagem.updateMask(imagem.select('QA_PIXEL').eq(2720))
+  return (imagem)
+}
+l8 = ee.ImageCollection("LANDSAT/LC08/C02/T1_TOA").filterDate('2019-01-01','2019-12-30').filterBounds(geometry).map(bqa).median()
+
+Map.addLayer(l8,{ bands: ['B6','B5','B4']},'OLI SEM NUMVE')

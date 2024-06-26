@@ -1,0 +1,20 @@
+// Import the example feature collection.
+var ecoregions = ee.FeatureCollection('projects/google/charts_feature_example');
+
+// Load PRISM climate normals image collection; convert images to bands.
+var normClim = ee.ImageCollection('OREGONSTATE/PRISM/Norm81m').toBands();
+Map.addLayer(normClim)
+Map.addLayer(ecoregions)
+Map.centerObject(ecoregions)
+
+// Define the chart and print it to the console.
+var chart =
+    ui.Chart.image
+        .byRegion({
+          image: normClim.select('[0-9][0-9]_tmean'),
+          regions: ecoregions,
+          xProperty: 'label'
+        })
+
+    .setChartType('ColumnChart')
+print(chart);

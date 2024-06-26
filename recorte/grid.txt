@@ -1,0 +1,59 @@
+Map.setCenter(-0.80, 10.99, 8);
+
+var studysite = ee.Geometry.Polygon(
+  [
+      [-1.1515625000000052,10.520491345661704],
+      [-0.7670410156250052,10.520491345661704],
+      [-0.7670410156250052,10.93607085954914],
+      [-1.1515625000000052,10.93607085954914],
+      [-1.1515625000000052,10.520491345661704]
+  ]
+);
+
+
+
+///////////////////////         SENTINEL-1        ////////////////////////////////
+
+var Sent1= ee.ImageCollection('COPERNICUS/S1_GRD')
+  .filterDate('2018-01-01', '2018-01-05')
+  .filter(ee.Filter.eq('instrumentMode','IW'))
+  .filter(ee.Filter.eq('resolution_meters', 10))
+  .filter(ee.Filter.listContains('transmitterReceiverPolarisation', 'VV'))
+  .filter(ee.Filter.eq('orbitProperties_pass', 'ASCENDING'))
+  .filterBounds(studysite);
+
+//print('Number of Sen1 images:', Sent1.size());
+print('Sentinel-1', Sent1);
+
+var imageVisParam = {
+  bands:["VV", "VV", "VV"],
+  min: -20.0,
+  max: 0.0,
+  gamma: 1
+};
+
+Map.addLayer(Sent1, imageVisParam, 'Sentinel-1');
+
+
+
+//////////////////////             GRID             ///////////////////////////////
+
+var grid = studysite.coveringGrid('EPSG:4326', 10000);
+Map.addLayer(grid, '', 'Grid');
+print('Grid:', grid);
+
+
+
+///////////////////////            CLIP            //////////////////////////////
+
+var imagecollection = Sent1;
+var featurecollection = grid;
+
+
+var clip_fc = function(col) {
+  return col.clipToCollection(featurecollection);
+};
+var map_ic = imagecollection.map(clip_fc);
+
+print ('New ImageCollection:', map_ic);
+Map.addLayer(map_ic, imageVisParam, 'New ImageCollection');

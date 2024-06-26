@@ -1,0 +1,22 @@
+var startYear = '2020';
+var endYear = '2021';
+var table = table.filter(ee.Filter.eq('NM_MUN','Indaiatuba'));
+
+var getPrecipit = function(image) {
+
+  // Reducing region and getting value
+  var value_ppt = ee.Image(image)
+    .reduceRegion(ee.Reducer.mean(), table)
+    .get('precipitation');
+
+  return ee.Number(value_ppt)  //mm/day
+
+};
+var dataset = ee.ImageCollection('NASA/GPM_L3/IMERG_MONTHLY_V06')
+    .filterDate(startYear, endYear)
+    .select('preci.toList(count)pitation')
+1
+var count = dataset.size();
+var ppt_list = dataset.map(getPrecipit);
+print("(mm/month)", ppt_list);
+    

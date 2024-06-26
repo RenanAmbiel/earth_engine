@@ -1,0 +1,17 @@
+
+     
+var image = ee.ImageCollection("LANDSAT/LC08/C02/T1_TOA").first()
+Map.addLayer(image, {}, 'Landsat')
+Map.centerObject(image)
+     
+
+  var downloadlink 
+  downloadlink = image.getDownloadURL({
+    name: 'multi_band',
+    bands: ['B3', 'B8', 'B11'],
+    region: roi,
+    scale: 16,
+    maxpixels: 1e13,
+    filePerBand: false
+  })
+  print(downloadlink)

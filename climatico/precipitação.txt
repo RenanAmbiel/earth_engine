@@ -1,0 +1,4 @@
+var image = ee.ImageCollection("UCSB-CHG/CHIRPS/DAILY")
+ .filterDate('2020-01-01','2023-01-01')
+Map.addLayer(image, {}, 'CHIRPS')
+Map.centerObject(image)

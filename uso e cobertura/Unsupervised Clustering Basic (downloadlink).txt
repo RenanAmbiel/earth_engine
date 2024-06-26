@@ -1,0 +1,17 @@
+
+// Cluster the input using the trained clusterer.
+var result = input.cluster(clusterer);
+
+// Display the clusters with random colors.
+Map.addLayer(result.randomVisualizer().clip(geometry), {}, 'clusters');
+Map.centerObject(geometry, 9);
+  var downloadlink 
+  downloadlink = result.randomVisualizer().clip(geometry).getDownloadURL({
+    name: 'multi_band',
+  
+    region: geometry,
+    scale: 30,
+    maxpixels: 1e13,
+    filePerBand: false
+  })
+  print(downloadlink)

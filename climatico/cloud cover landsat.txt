@@ -1,0 +1,14 @@
+// Load a raw Landsat scene and display it.
+var raw = ee.ImageCollection('LANDSAT/LC08/C02/T1_L2')
+  .select(['SR_B4','SR_B3','SR_B2'])
+  .filterDate("2022-01-01","2022-12-31")
+  .filterBounds(AREA)
+  .filter(ee.Filter.lt('CLOUD_COVER',1))
+  .median()
+  .clip(AREA)
+
+  
+print('nome',raw.get('PRODUCT_ID'))
+print('%',raw.get('CLOUD_COVER'))
+
+Map.addLayer(raw,imageVisParam)

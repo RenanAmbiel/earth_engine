@@ -1,0 +1,25 @@
+var imagens = imageCollection.filterBounds(geometry)
+    .filterMetadata('CLOUD_COVER','less_than', 0.03)
+  
+
+var imagem = imagens.first()
+Map.addLayer(imagem,{bands: 'B6,B5,B4'},'imagem')
+var amostra = vegetacao.merge(agua).merge(solo)
+
+Map.addLayer(amostra)
+
+var bandas = ['B4','B5','B6']
+var treinamento = imagem.select(bandas).sampleRegions({
+ collection: amostra,
+ properties: ['class'],
+ scale: 30
+})
+var classificacao = ee.Classifier.minimumDistance('euclidean').train({
+  features: treinamento,
+  classProperty: 'class',
+  inputProperties: bandas,
+  
+  
+})
+var classificacao = imagem.select(bandas).classify(classificacao)
+Map.addLayer(classificacao,{min:0,max:2, pallete:['green','blue','magenta']}, 'classificacao')

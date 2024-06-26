@@ -1,0 +1,153 @@
+ 
+var title = ui.Label({
+  value: 'Part 1: Exploring NDVI',
+  style:{
+  fontWeight: 'bold',
+  fontSize: '18px'
+  }});
+title.style().set('position', 'top-center');
+Map.add(title);
+  
+var roi_1 = geometry;   
+function applyScaleFactors(image) {
+  var opticalBands = image.select('SR_B.').multiply(0.0000275).add(-0.2);
+  var thermalBands = image.select('ST_B.*').multiply(0.00341802).add(149.0);
+  return image.addBands(opticalBands, null, true)
+              .addBands(thermalBands, null, true);
+}
+ function maskL9sr(image) {
+  var cloudBitMask = 1 << 3;
+  var cloudShadowBitMask = 1 << 4;
+  // Get the pixel QA band.
+  var qa = image.select('QA_PIXEL');
+  // All flags should be set to zero, indicating clear conditions.
+  var mask = qa.bitwiseAnd(cloudBitMask).eq(0)
+      .and(qa.bitwiseAnd(cloudShadowBitMask).eq(0));
+  // Return the masked image, scaled to TOA reflectance, without the QA bands.
+  return image.updateMask(mask)
+      .select("SR_B[0-7]*")
+      .copyProperties(image, ["system:time_start"]);
+}
+
+// Load L9 data, filter by date and our region of interest, apply the scale factor and cloud mask, and reduce to an image by median value
+var L9 = ee.ImageCollection("LANDSAT/LC09/C02/T1_L2")
+    .filterDate('2022-07-01', '2022-07-31')
+    .filterBounds(roi_1)
+    .map(applyScaleFactors)
+    .map(maskL9sr)
+    .median();
+
+ var rds = L9.clip(roi_1); 
+
+ 
+var L9NDVI = rds.normalizedDifference(['SR_B5', 'SR_B4']);
+ 
+var ndviVis = {min: -1, max: 1, palette: ['white', 'green']}; // Change min and max based on printed values
+ 
+Map.addLayer(L9NDVI, ndviVis, 'Landsat 9 NDVI');
+
+ Map.centerObject(L9NDVI, 12);
+ 
+var minMax = L9NDVI.reduceRegion({
+    reducer: ee.Reducer.minMax(),
+    geometry: geometry,
+    scale: 30,
+ });
+
+print('Min & Max Real De Salinas (L9) NDVI: ', minMax);
+ 
+var roi_2 = geometry2; //If you want to change your own region of interest, change it from "geometry" on this line.
+
+// Create cloud mask for Sentinel-2
+/**
+ * Function to mask clouds using the Sentinel-2 QA band
+ * @param {ee.Image} image Sentinel-2 image
+ * @return {ee.Image} cloud masked Sentinel-2 image
+ */
+function maskS2clouds(image) {
+  var qa = image.select('QA60');
+
+  // Bits 10 and 11 are clouds and cirrus, respectively.
+  var cloudBitMask = 1 << 10;
+  var cirrusBitMask = 1 << 11;
+
+  // Both flags should be set to zero, indicating clear conditions.
+  var mask = qa.bitwiseAnd(cloudBitMask).eq(0)
+      .and(qa.bitwiseAnd(cirrusBitMask).eq(0));
+
+  return image.updateMask(mask).divide(10000);
+}
+
+// Load S2 data, filter by date and our region of interest, filter for less cloudy images, apply the cloud mask, and reduce to an image by median value
+ var S2 = ee.ImageCollection("COPERNICUS/S2_SR") 
+   .filterDate('2022-07-01', '2022-07-31')
+   .filterBounds(roi_2)
+   // Pre-filter to get less cloudy granules.
+   .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE',20))
+   .map(maskS2clouds)
+   .median();
+
+// Use the variable roi_2 to clip L9 imagery to the geometry drawn over Kansas
+var kansas = S2.clip(roi_2);
+
+// Calculate NDVI over Kansas
+// NDVI = (NIR - R) / (NIR + R)
+// Sentinel 2 bands: B8 is NIR, B4 is Red
+var S2NDVI = kansas.normalizedDifference(['B8', 'B4']);
+
+// Set visual parameters
+var ndviVis = {min: -1, max: 1, palette: ['white', 'green']}; // Change min and max based on printed values
+
+// Add Sentinel-2 NDVI to the map as a layer
+Map.addLayer(S2NDVI, ndviVis, 'Sentinel-2 NDVI');
+
+// Set the center object for the map as the ROI NDVI and set the zoom layer to 10
+// Map.centerObject(S2NDVI, 10); //// Un-comment this line when you get to Part 2!
+
+// Print the minimum and maximum NDVI values in the roi
+var minMax = S2NDVI.reduceRegion({
+    reducer: ee.Reducer.minMax(),
+    geometry: roi_2,
+    scale: 10,
+    maxPixels: 1e10
+});
+
+print('Min & Max Kansas (S2) NDVI: ', minMax);
+
+//*****************************************
+//  PART 3: EXPLORE PREPARED NDVI DATASETS
+//*****************************************
+// Terra MODIS Vegetation Indices 16-Day L3 Global 250 m
+var Terra_NDVI = ee.ImageCollection('MODIS/061/MOD13Q1')
+  .filter(ee.Filter.date('2022-07-01', '2022-07-31'))
+  .select('NDVI');
+
+// Set visual parameters  
+var ndviVis = {
+  min: 0,
+  max: 8000,
+  palette: ['white', 'green'],
+};
+
+// Add Terra NDVI to the map as a layer
+Map.addLayer(Terra_NDVI, ndviVis, 'Terra MODIS NDVI', 0);
+
+// VIIRS Vegetation Indices Product 16-Day 500m
+var VIIRS_NDVI = ee.ImageCollection('NOAA/VIIRS/001/VNP13A1')
+    .filterDate('2022-07-01', '2022-07-31')
+    .select('NDVI')
+    .median();
+
+// Set visual parameters
+var NDVI_vis = {
+  min: 0,
+  max: 10000,
+  palette: ['white', 'green'],
+};
+
+// Add VIIRS NDVI to the map as a layer
+Map.addLayer(VIIRS_NDVI, NDVI_vis, 'VIIRS NDVI', 0);
+
+//*****************************************************************************************************
+//                                    END OF THE SCRIPT
+//=====================================================================================================

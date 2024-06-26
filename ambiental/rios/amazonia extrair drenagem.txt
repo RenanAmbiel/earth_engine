@@ -1,0 +1,9 @@
+var   removerBorda = function (image){
+  var box = image.geometry()
+  return image.clip(box.buffer(-500))
+}
+var removerNuvens = function (image){
+  var box = image.geometry() 
+  var imagemSemNuvem = image.updateMask(scored.select(['cloud']).lt()))
+  return image.clip(box.buffer(-500))
+}

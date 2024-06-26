@@ -1,0 +1,25 @@
+sentinel = sentinel.filterBounds(geometry).filterDate('2019-05-01','2019-12-31').first()
+
+Map.addLayer(sentinel,{bands:['B4','B3','B2'],max:15286,min:2057},'sentinel rgb')
+
+var scl = sentinel.select('SCL')
+Map.addLayer(scl,{min:1,max:11},'scl')
+
+var cloud_shadow = scl.eq(3)
+var cloud_low = scl.eq(7)
+var cloud_medium = scl.eq(8)
+var cloud_high = scl.eq(9)
+
+Map.addLayer(cloud_high,{min:0,max:1, pallete:['red','green']},'cloud_shadow')
+
+var cloud_mask =  cloud_shadow.add(cloud_low).add(cloud_medium).add(cloud_high)
+
+Map.addLayer(cloud_mask,{min:0,max:1, pallete:['red','green']},'cloud_mask')
+
+var cloud_uni = cloud_mask.eq(0).selfMask()
+
+Map.addLayer(cloud_uni,{pallete: ['red']},'cloud_uni')
+
+var cloud_masked = sentinel.updateMask(cloud_uni)
+
+Map.addLayer(cloud_masked,{bands:['B4','B3','B2'],max:17197,min:2292},'cloud_masked')

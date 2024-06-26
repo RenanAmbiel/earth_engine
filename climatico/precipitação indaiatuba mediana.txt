@@ -1,0 +1,16 @@
+var Indaiatuba = table.filter(ee.Filter.eq('NM_MUN','Indaiatuba'));
+
+// Load a raw Landsat scene and display it.
+var image = ee.ImageCollection("UCSB-CHG/CHIRPS/DAILY")
+  .filterDate('2023-01-01','2023-04-01')
+  .filterBounds(Indaiatuba);
+  
+var raw_median = image.median();
+var visTp = {
+  min: 0,
+  max: 111.34,
+  palette: ['#FFFFFF', '#00FFFF', '#0080FF', '#DA00FF', '#FFA400', '#FF0000']
+};
+// Center the map on the image.
+Map.centerObject(Indaiatuba, 9)
+Map.addLayer(raw_median ,visTp,'CHIRPS')

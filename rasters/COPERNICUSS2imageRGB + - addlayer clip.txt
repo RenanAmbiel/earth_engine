@@ -1,0 +1,17 @@
+var Indaiatuba = table.filter(ee.Filter.eq('NM_MUN','Indaiatuba'));
+
+var Sentinel2 = ee.ImageCollection("COPERNICUS/S2")
+ .filterDate('2018-09-01', '2018-09-30')
+ .select('B2',"B3","B4")
+ 
+function imagecliped(image){
+  return image.clip(Indaiatuba)
+}
+
+var rgbVis = {
+  min:1019,
+  max: 6850,
+  bands: ['B4', 'B3', 'B2']}
+Map.addLayer(Sentinel2.map(imagecliped), rgbVis)
+Map.centerObject(Indaiatuba)
+

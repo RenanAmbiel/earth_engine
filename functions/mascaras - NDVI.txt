@@ -1,0 +1,43 @@
+var app = function (image)
+{
+   //indice vegetaçao 
+var  nir = image.select('B5');
+var red = image.select('B4');
+image = nir.subtract(red).divide(nir.add(red)).rename('NDVI');
+return image
+}
+ 
+var OLI = ee.ImageCollection("LANDSAT/LC08/C01/T1_TOA")
+ .filterDate('2017-01-01', '2017-09-11')
+ .map(app)
+ .median()
+
+// rampa de cor 
+var palette = ['FFFFFF', 'CE7E45', 'DF923D', 'F1B555', 'FCD163', '99B718',
+               '74A901', '66A000', '529400', '3E8601', '207401', '056201',
+               '004C00', '023B01', '012E01', '011D01', '011301'];
+                 
+var veg_densa = OLI.gt(0.7).selfMask()
+
+var veg = OLI.updateMask(OLI.lte(0.7))
+var veg = veg.updateMask(OLI.gt(0.3))
+
+var pasto = OLI.updateMask(OLI.lte(0.3))
+var pasto = pasto.updateMask(OLI.gt(0.2))
+
+
+var solo_exp = OLI.updateMask(OLI.lte(0.2))
+var solo_exp = solo_exp.updateMask(OLI.gt(0.1))
+
+
+var agua = OLI.updateMask(OLI.lte(0))
+
+
+
+ //mapa
+Map.addLayer(OLI,{min: 0 , max: 1, bands: ['NDVI'], palette: palette}, 'NDVI');
+Map.addLayer(veg_densa,{min: 0 , max: 1, bands: ['NDVI'], palette: palette},'veg');
+Map.addLayer(veg,{min: 0 , max: 1, bands: ['NDVI'], palette: palette},'veg');
+Map.addLayer(pasto,{min: 0 , max: 1, bands: ['NDVI'], palette: palette},'pasto');
+Map.addLayer(solo_exp,{min: 0 , max: 1, bands: ['NDVI'], palette: palette},'soloexp');
+Map.addLayer(agua,{min: 0 , max: 1, bands: ['NDVI'], palette: palette},'agua');

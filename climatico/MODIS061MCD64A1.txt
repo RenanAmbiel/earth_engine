@@ -1,0 +1,8 @@
+var SP = table.filter(ee.Filter.eq('SIGLA_UF','SP'));
+
+
+var image = ee.ImageCollection("MODIS/061/MCD64A1")
+              .filter(ee.Filter.date('2017-01-01', '2018-05-01'));
+              
+Map.addLayer(image)
+Map.centerObject(SP)

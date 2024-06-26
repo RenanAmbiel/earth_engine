@@ -1,0 +1,10 @@
+sentinel = sentinel.filterBounds(geometry).filterDate('2019-05-01','2019-12-31').first().map(cloudmask)
+
+Map.addLayer(sentinel,{bands:['QA60'],max:15286,min:2057},'sentinel rgb')
+
+function mascara_nuvem(imagem){
+  var scl = imagem.select('SCL')
+  var mask = scl.eq(3).or(scl.gte(7).and(scl.lte(10)))
+  return imagem.updateMask(mask.eq(0))
+}
+ 
