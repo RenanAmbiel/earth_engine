@@ -1,0 +1,3 @@
+## Vamos filtrar os dados para nossa região de interesse
+gdf_filter = gdf[gdf.SIGLA=='SP']
+gdf_filter.plot()

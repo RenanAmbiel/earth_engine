@@ -1,0 +1,3 @@
+###Média mensal
+df_month = df.groupby(['ano','mes'])[['p_mean']].sum().reset_index() 
+df_month

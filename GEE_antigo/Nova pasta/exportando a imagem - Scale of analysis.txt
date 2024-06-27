@@ -1,0 +1,30 @@
+var roi = geometry // geometria criada com auxilio do GEE
+//freature collection image colection  sentinel 2
+var collection = ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED")
+  .filterBounds(roi)//imagem de acordo com geometria pedida
+  .filterDate('2020-01-01','2023-01-01')
+  .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTEGE',1))
+  .select('B.*')
+
+Map.addLayer(img,{bands:['B4','B3','B2'],min:78, max:2832},'S2')// visualizando a imagem
+
+//exportando a imagem 
+var limite = ee.Geometry.Polygon(//definindo a regiao 
+  [[[-45,11],
+  [-45,11],
+  [-45,11],
+  [-45,11]]],null, false);
+  
+  //definindo parametros 
+Export.image.toDrive({
+  image:img,
+  description:'S2_sem_nuvem',
+  folder:'geeminicurso',
+  filenamePrefix:'S2_sem_nuvem',
+  region:limite,
+  scale:20,
+  crs:'EPSG:4674',//IRGASS 2000
+  maxPixels:1e13,// necessario para exportar arquivos pesados 
+  fileformat:'GeoTIFF',
+})
+  

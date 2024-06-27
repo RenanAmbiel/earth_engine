@@ -1,0 +1,8 @@
+##Qual é a precipitação mínima, média e máxima da nossa região de estudo
+reducers = ee.Reducer.min().combine(**{
+  'reducer2': ee.Reducer.mean(),
+  'sharedInputs': True
+}).combine(**{
+  'reducer2': ee.Reducer.max(),
+  'sharedInputs': True
+});

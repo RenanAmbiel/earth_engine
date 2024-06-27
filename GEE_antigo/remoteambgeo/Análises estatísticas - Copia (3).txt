@@ -1,0 +1,15 @@
+##Gerar um gráfico 
+
+##Definindo o tamanho da figura
+plt.figure(figsize=(12,6))
+
+g = sns.barplot(data=precipita_df, x="stats", y="value", hue="legenda", palette='Blues')
+#Título
+plt.title('Precipitação Acumulada mm/ano \n Estado de São Paulo - 2021 e 2022', fontsize =14)
+
+##eixo x
+plt.xlabel('mm/ano',fontsize=12)
+plt.xticks(fontsize=12)
+##eixo y
+plt.ylabel('Precipitação Acumulada mm/ano',fontsize=12)
+plt.yticks(fontsize=12)

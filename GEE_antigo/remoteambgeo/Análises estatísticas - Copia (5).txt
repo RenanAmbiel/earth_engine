@@ -1,0 +1,7 @@
+##Criando nosso dataframe a partir dos dados reduzidos 
+##Estabelecendo a lista dos dados
+stats_list = data_reduce.reduceColumns(ee.Reducer.toList(5), ['SIGLA','data','min','mean','max']).values().get(0)
+
+# não se esqueça que precisamos chamar o método de retorno de chamada "getInfo" para recuperar os dados
+df = pd.DataFrame(stats_list.getInfo(), columns=['SIGLA','data','p_min','p_mean','p_max'])
+df.head()

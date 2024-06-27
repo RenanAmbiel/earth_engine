@@ -1,0 +1,27 @@
+#Vamos Obter os valores de Precipitação médio, mínimo e máximo para a região
+##Iremos utlizar o reduce regions
+##Função para converter informações da imagem em tabela
+def reduce (image):
+    serie_reduce = image.clip(region).reduceRegions(**{
+                        'collection':region,
+                        'reducer': ee.Reducer.mean().combine(**{
+                        'reducer2': ee.Reducer.min(), 
+                                    'sharedInputs': True}).combine(**{
+                        'reducer2': ee.Reducer.max(),
+                                    'sharedInputs': True}), 
+                        'scale': 5566
+                        })
+     
+    serie_reduce = serie_reduce.map(lambda f: f.set({'data': image.date().format('YYYY-MM-dd')}))         
+
+    return serie_reduce.copyProperties(image, ["system:time_start"])
+
+##Aplicando a função de redução na Coleção 
+data_reduce = collection.map(reduce)\
+                        .flatten()\
+                        .sort('data',True)\
+                        .select(['SIGLA','data','min','mean','max'])
+
+##Verificando os dados e as propriedades
+# print(data_reduce.size().getInfo())
+# print(data_reduce.first().propertyNames().getInfo())

@@ -1,0 +1,3 @@
+## Vamos abrir um arquivo shp de nossa base 
+gdf = gpd.read_file('/content/drive/MyDrive/BASES/BR_UF_2021.shp')
+gdf.head()

@@ -1,0 +1,11 @@
+// create a function to derive extent of one burn severity class
+// arguments are class number and class name
+var areacount = function(cnr, name) {
+ var singleMask =  classified.updateMask(classified.eq(cnr));  // mask a single class
+ var stats = singleMask.reduceRegion({
+  reducer: ee.Reducer.count(),               // count pixels in a single class
+  geometry: area,
+  scale: 50,
+  maxPixels: 1e10,
+  bestEffort: true
+  });

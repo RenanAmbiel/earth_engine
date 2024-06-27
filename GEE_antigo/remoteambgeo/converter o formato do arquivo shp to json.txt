@@ -1,0 +1,14 @@
+###Precisamos converter o formato do arquivo shp to json
+###o EE trabalha com sua base em json.
+
+##convertendo de shp para to json
+shp_to_json = gdf_filter.to_json()
+
+##Após realizar a conversão precisamos carregar esse arquivo json
+##Carregando o arquivo json
+roi = json.loads(shp_to_json)
+
+##selecionando as features
+roi = roi['features']
+##Verificando o processo
+roi

@@ -1,0 +1,18 @@
+var image = ee.Image('LANDSAT/LC08/C02/T1_TOA/LC08_044034_20140318').select('B4');
+
+var printAtScale = function(scale) {
+  print('Pixel value at '+scale+' meters scale',
+    image.reduceRegion({
+      reducer: ee.Reducer.first(),
+      geometry: image.geometry().centroid(),
+      // The scale determines the pyramid level from which to pull the input
+      scale: scale
+  }).get('B4'));
+};
+
+printAtScale(10); // 0.10394100844860077
+printAtScale(30); // 0.10394100844860077
+printAtScale(50); // 0.09130698442459106
+printAtScale(70); // 0.1150854229927063
+printAtScale(200); // 0.102478988468647
+printAtScale(500); // 0.09072770178318024

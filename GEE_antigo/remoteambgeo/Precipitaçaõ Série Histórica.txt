@@ -1,0 +1,7 @@
+##Defindo o ponto para selecionar a imagen sobre a região
+collection = ee.ImageCollection('UCSB-CHG/CHIRPS/DAILY')\
+                                              .filterDate('2021-01-01','2023-03-01')\
+                                              .filterBounds(region)                                     
+
+##Quantas imagens estamos analisando
+print(collection.size().getInfo())

@@ -1,0 +1,5 @@
+###Agrupamento dos dados por mês
+df['mes'] = pd.to_datetime (df['data']).dt.month
+df['n_mes'] = pd.to_datetime (df['data']).dt.month_name()
+df['ano'] = pd.to_datetime (df['data']).dt.year
+df.head()

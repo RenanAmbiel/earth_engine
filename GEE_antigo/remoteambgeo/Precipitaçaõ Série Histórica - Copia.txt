@@ -1,0 +1,15 @@
+# Defina um método para exibir blocos de imagens do Earth Engine em um folium map
+Map = geemap.Map()
+##Centralizando a imagem
+Map = geemap.Map(location=[-23.882358998999962,-46.17963099999997], zoom_start= 10)
+
+##Visualizando a imagem sobre a reigão 
+chuva_2020 = collection.filterDate('2021-01-01','2022-01-01').sum().rename('precipitation_2020').clip(region)##acumula os dados anuais de chuva
+chuva_2021 = collection.filterDate('2022-01-01','2023-01-01').sum().rename('precipitation_2021').clip(region)##acumula os dados anuais de chuva
+
+##Adicionando o Layer 
+Map.add_ee_layer(chuva_2020, {'palette':['violet','cyan','blue','darkblue'],'min': 623,'max': 2300}, '2020')
+Map.addLayer(chuva_2021, {'palette':['violet','cyan','blue','darkblue'],'min': 623,'max': 2300}, '2021')
+
+##Finalizando a tarefa
+display(Map)

@@ -1,0 +1,16 @@
+###Agora vamos aplicar os redutores estatísticos em nossa imagem
+
+##imagem
+precipitation = chuva_2020.addBands(chuva_2021)
+
+##Estatística 
+stats = precipitation.reduceRegion(**{
+  'geometry':region,
+  'reducer': reducers,
+  'bestEffort': True,
+  'scale':5566,
+  'crs':'EPSG:4674',
+  'maxPixels': 1e13
+});
+
+print(stats.getInfo());

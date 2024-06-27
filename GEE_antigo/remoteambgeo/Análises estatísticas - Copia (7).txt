@@ -1,0 +1,24 @@
+##Gráfico contendo as informações 
+nome=str(df.SIGLA[0])
+data_fim =str(df.ano.max())[:4]
+data_inicial = str(df.ano.min())[:4]
+##Análise Gráfica 
+fig, ax = plt.subplots(1,1,figsize=(20, 8), dpi= 100) 
+#Título
+plt.title('Série Temporal Precipitação CHIRPS.\n {} {} a {}'.format(nome, data_inicial, data_fim))
+
+##Extrair dados
+g= sns.boxplot(x='ano', y='p_mean', hue='n_mes', ax=ax, data=df, palette="rainbow", linewidth=1)
+
+##Personalizando o gráfico
+plt.grid(linestyle='--', linewidth=0.2, which='both')
+handles, _ = ax.get_legend_handles_labels()  
+ax.legend(handles, ['jan','fev','mar','abr','mai','jun','jul','aug','set','out','nov','dez'],
+          loc="best",title = "Legenda", title_fontsize = "12")
+
+##Eixo X
+plt.xlabel('Data')
+plt.xticks(rotation=0)
+##Eixo Y
+plt.ylabel('Precipitação mm/mês')
+plt.show()

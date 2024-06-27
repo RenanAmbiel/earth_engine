@@ -1,0 +1,13 @@
+###Agora vamos utilizar essa roi como nossa região de interesse
+region = ee.FeatureCollection(roi)
+
+# Defina um método para exibir blocos de imagens do Earth Engine em um folium map
+Map = geemap.Map()
+##Centralizando a imagem
+Map = geemap.Map(location=[-23.882358998999962,-46.17963099999997], zoom_start= 10)
+
+##Adicionando a feature  = Converte para Image (desenha o limite)
+image = ee.Image().paint(region, 0, 2)
+Map.addLayer(image,{'palette':'red'}, 'ROI')
+
+display(Map)

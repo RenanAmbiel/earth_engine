@@ -1,0 +1,21 @@
+##Gráfico de barras
+fig, ax = plt.subplots(1,1,figsize=(10, 6), dpi= 100) 
+
+##Tipo de gráficos
+sns.barplot(x="ano", y='p_mean', hue='mes', data=df_month, palette="Set2")
+
+#Título
+plt.title('Precipitação acumulada (mm/mês) - Precipitação CHIRPS.\n {} {} a {}'.format(nome, data_inicial, data_fim))
+
+##Personalizando o gráfico
+plt.grid(linestyle='--', linewidth=0.2, which='both')
+handles, _ = ax.get_legend_handles_labels()  
+ax.legend(handles, ['jan','fev','mar','abr','mai','jun','jul','aug','set','out','nov','dez'],
+          loc="upper right",title = "Legenda", title_fontsize = "12")
+
+##Eixo X
+plt.xlabel('Data')
+plt.xticks(rotation=0)
+##Eixo Y
+plt.ylabel('Precipitação mm/mês')
+plt.show() 

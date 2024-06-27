@@ -1,0 +1,54 @@
+//exporta reflectancia de superficie de brasilia
+
+//filtrar imagens NBR de Brasilia, para o ano de 1985
+var sr_landsat = ee.ImageCollection("LANDSAT/LC09/C02/T1_TOA")
+          .filterBounds(geometry)
+          .filterDate('2021-01-01', '2022-03-31');
+
+print(sr_landsat);
+
+// Get the number of images.
+var count = sr_landsat.size();
+print('Count: ', count);
+
+// Get the date range of images in the collection.
+var range = sr_landsat.reduceColumns(ee.Reducer.minMax(), ["system:time_start"])
+print('Date range: ', ee.Date(range.get('min')), ee.Date(range.get('max')))
+
+// Sort by a cloud cover property, get the least cloudy image.
+var image = ee.Image(sr_landsat.sort('CLOUD_COVER').first());
+print('Least cloudy image: ', image);
+
+// Limit the collection to the 10 most recent images.
+var recent = sr_landsat.sort('system:time_start', false).limit(10);
+print('Recent images: ', recent);
+
+
+
+// Imagem cortada para a área, em um único arquivo (camada)
+
+var img_selec = ee.Image('LANDSAT/LC08/C01/T1/LC08_218073_20190911')
+      .select(['B1','B2','B3','B4','B5','B6','B7']);
+
+
+var visualization = {
+  bands: ['B6', 'B5', 'B4'],
+  min: 0.0,
+  max: 30000.0,
+};
+
+
+Map.setCenter(-44, -20, 4);
+
+Map.addLayer(img_selec, visualization, "False Color (654)");
+
+// Export the image, specifying scale and region.
+// alterar apenas o description
+Export.image.toDrive({
+  image: img_selec,
+  description: 'L8_OLI',
+  scale: 30,
+  region: bh
+});
+
+//clicar em Run, depois em aba Tasks -> Run

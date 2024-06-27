@@ -1,0 +1,8 @@
+// Load an image.
+var image = ee.Image('LANDSAT/LC08/C02/T1_TOA/LC08_044034_20140318');
+
+// Center the map on the image.
+Map.centerObject(image, 9);
+
+// Display the image.
+Map.addLayer(image);

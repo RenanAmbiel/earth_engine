@@ -1,0 +1,6 @@
+##Criando dataframe da importância das variáveis
+precipita_df = pd.DataFrame(lista.items(), columns=['Precipitation','value'])
+precipita_df = precipita_df.round(2)
+precipita_df['legenda'] = ['2021','2021','2021','2022','2022','2022']
+precipita_df['stats'] = ['Precipitação Máxima','Precipitação Média','Precipitaçaõ Mínima','Precipitação Máxima','Precipitação Média','Precipitaçaõ Mínima']
+precipita_df
